@@ -65,7 +65,6 @@
   },
   "lint-staged": {
     "src/{app,environments}/**/*{.ts,.html,.scss}": [
-      "ng lint",
       "prettier --write"
     ]
   },
