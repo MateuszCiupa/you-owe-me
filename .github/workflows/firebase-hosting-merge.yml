@@ -8,6 +8,7 @@ name: Deploy to Firebase Hosting on merge
       - main
 jobs:
   build_and_deploy:
+    if: github.event_name == 'push' && contains(toJson(github.event.commits), '[ci skip]') == false && contains(toJson(github.event.commits), '[skip ci]') == false
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
