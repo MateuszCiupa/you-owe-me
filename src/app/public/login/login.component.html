@@ -1,0 +1,23 @@
+<mat-card>
+  <mat-card-title> Sign in to YouOweMe </mat-card-title>
+  <mat-card-content>
+    <form [formGroup]="loginForm" fxLayout="column">
+      <mat-form-field>
+        <mat-label>Email</mat-label>
+        <input matInput formControlName="email" />
+      </mat-form-field>
+      <mat-form-field>
+        <mat-label>Password</mat-label>
+        <input matInput type="password" formControlName="password" />
+      </mat-form-field>
+    </form>
+    <div fxLayoutAlign="space-between">
+      <a routerLink="/password/reset">Forgot password?</a>
+      <button mat-stroked-button (click)="onSignIn()">Sign in</button>
+    </div>
+  </mat-card-content>
+  <mat-card-actions fxLayoutAlign="center">
+    <button mat-stroked-button (click)="onGoogleSignIn()">Login with Google</button>
+  </mat-card-actions>
+  <mat-card-subtitle> New to YouOweMe? <a routerLink="/register">Create your account.</a> </mat-card-subtitle>
+</mat-card>
