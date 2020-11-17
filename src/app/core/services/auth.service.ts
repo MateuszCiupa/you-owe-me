@@ -9,13 +9,14 @@ import firebase from 'firebase/app';
 
 import { RegisterForm } from 'src/app/public/register/register.model';
 import { SnackbarService } from './snackbar.service';
-import { User } from './user.model';
+import { User } from '../models/user.model';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
   public user$: Observable<User | null | undefined>;
+  public user: firebase.User | null = null;
 
   constructor(
     private auth: AngularFireAuth,
@@ -26,8 +27,10 @@ export class AuthService {
     this.user$ = this.auth.authState.pipe(
       switchMap((user) => {
         if (!!user) {
+          this.user = user;
           return this.afs.doc<User>(`users/${user.uid}`).valueChanges();
         } else {
+          this.user = null;
           return of(null);
         }
       })
@@ -51,7 +54,8 @@ export class AuthService {
       const cred = await this.auth.createUserWithEmailAndPassword(email, password);
 
       if (!!cred.user) {
-        await this.afs.collection('users').doc(cred.user.uid).set({
+        await this.afs.doc(`users/${cred.user.uid}`).set({
+          uid: cred.user.uid,
           displayName: username,
           email,
         });
@@ -71,8 +75,18 @@ export class AuthService {
     const cred = await this.auth.signInWithPopup(provider);
 
     if (!!cred.user) {
+      let { displayName, email, photoURL } = cred.user;
+      displayName = displayName || 'Unknown';
+      email = email || '';
+      photoURL = photoURL || '';
+      const user: User = {
+        uid: cred.user.uid,
+        displayName,
+        email,
+        photoURL,
+      };
       this.router.navigate(['dashboard']);
-      return this.updateUserData(cred.user);
+      return this.updateUserData(user);
     }
   }
 

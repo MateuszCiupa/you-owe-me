@@ -15,14 +15,14 @@
     </mat-nav-list>
   </mat-sidenav>
   <mat-sidenav-content>
-    <mat-toolbar *ngIf="auth.user$ | async" color="primary">
+    <mat-toolbar *ngIf="auth.user$ | async; let user" color="primary">
       <button type="button" aria-label="Toggle sidenav" mat-icon-button (click)="drawer.toggle()">
         <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
       </button>
-      <span>you-owe-me</span>
+      <span>{{ user.displayName }}</span>
       <span class="example-spacer"></span>
       <button type="button" mat-icon-button [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu">
-        <mat-icon>face</mat-icon>
+        <img [src]="user.photoURL || '/assets/face-white.svg'" style="width: 30px; height: 30px" class="user-icon" />
       </button>
       <mat-menu #menu="matMenu">
         <button mat-menu-item routerLink="/user/settings">
@@ -33,10 +33,14 @@
           <mat-icon>bar_chart</mat-icon>
           <span>Stats</span>
         </button>
+        <mat-divider></mat-divider>
         <button mat-menu-item (click)="onSignOut()">Sign out</button>
+        <mat-divider></mat-divider>
       </mat-menu>
     </mat-toolbar>
     <!-- Add Content Here -->
-    <ng-content></ng-content>
+    <div class="main-content">
+      <ng-content></ng-content>
+    </div>
   </mat-sidenav-content>
 </mat-sidenav-container>
