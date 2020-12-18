@@ -1,1 +1,52 @@
-<p>expenses works!</p>
+<div class="action-bar">
+  <button mat-raised-button color="accent" routerLink="/expenses/create">
+    <mat-icon>add</mat-icon>
+    Create new expense
+  </button>
+</div>
+
+<mat-card>
+  <mat-card-header>
+    <mat-card-title> Your Expenses </mat-card-title>
+  </mat-card-header>
+
+  <mat-card-content>
+    <mat-accordion>
+      <mat-expansion-panel *ngFor="let expense of expenses; index as i">
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            {{ expense.title }}
+          </mat-panel-title>
+          <mat-panel-description>
+            {{ expense.description || 'Description not provided' }}
+          </mat-panel-description>
+        </mat-expansion-panel-header>
+        <mat-list *ngIf="contributors[i]">
+          <mat-list-item *ngFor="let contributor of contributors[i]">
+            <img
+              matListIcon
+              [src]="
+                (user && contributor.uid === user.uid ? user.photoURL : getFriend(contributor.uid)?.photoURL) ||
+                '/assets/face-black.svg'
+              "
+              style="width: 24px; height: 24px"
+              class="user-icon"
+            />
+            <span mat-line>
+              Paid:
+              {{ contributor.paid }}
+            </span>
+            <span mat-line>
+              Spent:
+              {{ contributor.spent }}
+            </span>
+          </mat-list-item>
+        </mat-list>
+      </mat-expansion-panel>
+    </mat-accordion>
+  </mat-card-content>
+
+  <mat-card-actions>
+    <mat-paginator></mat-paginator>
+  </mat-card-actions>
+</mat-card>

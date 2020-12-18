@@ -13,6 +13,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { MatCardModule } from '@angular/material/card';
+import { MatDividerModule } from '@angular/material/divider';
 
 import { NavigationComponent } from './navigation/navigation.component';
 import { LoginComponent } from './login/login.component';
@@ -38,6 +39,7 @@ import { PasswordResetComponent } from './password-reset/password-reset.componen
     MatButtonModule,
     MatCardModule,
     MatIconModule,
+    MatDividerModule,
   ],
   exports: [NavigationComponent],
 })

@@ -1,0 +1,23 @@
+<h3 mat-dialog-title>{{ title | titlecase }}</h3>
+
+<div>
+  <mat-list>
+    <mat-list-item *ngFor="let contributor of data.contributors; index as i">
+      <img
+        matListIcon
+        [src]="contributor.user.photoURL || '/assets/face-black.svg'"
+        style="width: 24px; height: 24px"
+        class="user-icon"
+      />
+      <mat-form-field mat-line>
+        <mat-label>{{ contributor.user.displayName }}</mat-label>
+        <input matInput [formControl]="getContributorControl(i)" type="number" />
+      </mat-form-field>
+    </mat-list-item>
+  </mat-list>
+</div>
+
+<mat-dialog-actions align="end">
+  <button mat-button mat-dialog-close>Close</button>
+  <button mat-raised-button color="accent" [disabled]="isSubmitDisabled" (click)="onSubmit()">Submit</button>
+</mat-dialog-actions>

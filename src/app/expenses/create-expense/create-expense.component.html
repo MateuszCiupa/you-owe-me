@@ -1,0 +1,122 @@
+<mat-card>
+  <mat-card-header>
+    <mat-card-title> Create Expense </mat-card-title>
+  </mat-card-header>
+
+  <mat-card-content fxLayout="column">
+    <mat-form-field>
+      <mat-chip-list #chipList>
+        <ng-container *ngFor="let contributor of contributors">
+          <mat-chip
+            *ngIf="!user || user.uid !== contributor.user.uid"
+            removable
+            (removed)="removeContributor(contributor.user.uid)"
+          >
+            <img
+              [src]="contributor.user.photoURL || '/assets/face-black.svg'"
+              style="width: 20px; height: 20px"
+              class="user-icon"
+            />
+            &nbsp;
+            <span class="text-overflow">
+              {{ contributor.user.displayName }}
+            </span>
+            <mat-icon matChipRemove>cancel</mat-icon>
+          </mat-chip>
+        </ng-container>
+        <input
+          #friendInput
+          [formControl]="friendControl"
+          placeholder="Share expense with"
+          [matChipInputFor]="chipList"
+          [matAutocomplete]="auto"
+        />
+      </mat-chip-list>
+      <mat-autocomplete #auto="matAutocomplete" (optionSelected)="friendSelected($event)">
+        <ng-container *ngFor="let friend of friends$ | async | fdoc">
+          <mat-option *ngIf="!isFriendFiltered(friend)" [value]="friend">
+            <img
+              [src]="friend.photoURL || '/assets/face-black.svg'"
+              style="width: 24px; height: 24px"
+              class="user-icon"
+            />
+            &nbsp;
+            {{ friend.displayName }}
+          </mat-option>
+        </ng-container>
+      </mat-autocomplete>
+      <mat-hint>Type friend name to autocomplete</mat-hint>
+    </mat-form-field>
+
+    <form [formGroup]="expenseControl" fxLayout="column">
+      <div fxLayout="row wrap" fxLayoutAlign="space-between">
+        <mat-form-field fxFlex="49" fxFlex.xs="100">
+          <mat-label>Title</mat-label>
+          <input matInput formControlName="title" required />
+          <mat-error *ngIf="titleControl.hasError('required')">Expense title shouldn't be empty</mat-error>
+          <mat-error *ngIf="titleControl.hasError('maxlength')"
+            >Expense title shouldn't be longer than 20 characters</mat-error
+          >
+        </mat-form-field>
+
+        <mat-form-field fxFlex="49" fxFlex.xs="100">
+          <mat-hint>How much did it cost?</mat-hint>
+          <mat-label>Total value</mat-label>
+          <input type="number" matInput formControlName="value" required />
+          <mat-error *ngIf="valueControl.hasError('required')"
+            >Expense value shouldn't be empty and should be a number</mat-error
+          >
+          <mat-error *ngIf="!valueControl.hasError('pattern') && valueControl.hasError('min')"
+            >Expense value should be at least 0.01</mat-error
+          >
+          <mat-error *ngIf="valueControl.hasError('pattern')"
+            >Expense value should be round off to 2 decimal places</mat-error
+          >
+        </mat-form-field>
+      </div>
+
+      <mat-form-field>
+        <mat-label>Description</mat-label>
+        <textarea matInput formControlName="description"></textarea>
+        <mat-error *ngIf="descriptionControl.hasError('maxlength')"
+          >Expense description shouldn't be longer than 100 characters</mat-error
+        >
+      </mat-form-field>
+
+      <div fxLayout="row wrap" fxLayoutAlign="space-between">
+        <mat-form-field fxFlex="49" fxFlex.xs="100" [matTooltip]="contributors.length < 2 ? 'Add collaborator' : ''">
+          <mat-hint *ngIf="paidByContrCount"
+            >{{ paidByContrCount }} contributor{{ paidByContrCount > 1 ? 's' : '' }}</mat-hint
+          >
+          <mat-label>Paid by</mat-label>
+          <mat-select formControlName="paidBy" (selectionChange)="onPaidByChange($event)">
+            <mat-option
+              *ngFor="let type of paidByTypes"
+              [value]="type"
+              [disabled]="valueControl.invalid"
+              [matTooltip]="valueControl.invalid ? 'Provide expense value' : ''"
+              >{{ type | titlecase }}</mat-option
+            >
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field fxFlex="49" fxFlex.xs="100" [matTooltip]="contributors.length < 2 ? 'Add collaborator' : ''">
+          <mat-label>Share by</mat-label>
+          <mat-select formControlName="shareBy" (selectionChange)="onShareByChange($event)">
+            <mat-option
+              *ngFor="let type of shareByTypes"
+              [value]="type"
+              [disabled]="valueControl.invalid"
+              [matTooltip]="valueControl.invalid ? 'Provide expense value' : ''"
+              >{{ type | titlecase }}</mat-option
+            >
+          </mat-select>
+        </mat-form-field>
+      </div>
+    </form>
+  </mat-card-content>
+
+  <mat-card-actions align="end">
+    <button mat-raised-button color="primary" (click)="onCreate()">Create</button>
+  </mat-card-actions>
+</mat-card>
