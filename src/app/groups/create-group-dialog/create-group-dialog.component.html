@@ -1,0 +1,65 @@
+<h3 mat-dialog-title>Create Group</h3>
+
+<mat-dialog-content>
+  <form fxLayout="column" [formGroup]="groupControl">
+    <mat-form-field>
+      <mat-label>Name</mat-label>
+      <input matInput required formControlName="displayName" />
+      <mat-hint>Should be between 6 and 20 characters long</mat-hint>
+      <mat-error *ngIf="displayNameControl.hasError('maxlength')">Name is too long</mat-error>
+      <mat-error *ngIf="displayNameControl.hasError('minlength')">Name is too short</mat-error>
+    </mat-form-field>
+    <mat-form-field>
+      <mat-label>Description</mat-label>
+      <textarea matInput formControlName="description"></textarea>
+      <mat-error *ngIf="descriptionControl.hasError('maxlength')"
+        >Group description shouldn't be longer than 100 characters</mat-error
+      >
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-chip-list #chipList>
+        <ng-container *ngFor="let groupUser of groupUsers">
+          <mat-chip *ngIf="!user || user.uid !== groupUser.uid" removable (removed)="removeGroupUser(groupUser.uid)">
+            <img
+              [src]="groupUser.photoURL || '/assets/face-black.svg'"
+              style="width: 20px; height: 20px"
+              class="user-icon"
+            />
+            &nbsp;
+            <span class="text-overflow">
+              {{ groupUser.displayName }}
+            </span>
+            <mat-icon matChipRemove>cancel</mat-icon>
+          </mat-chip>
+        </ng-container>
+        <input
+          #friendInput
+          [formControl]="friendControl"
+          placeholder="Group users"
+          [matChipInputFor]="chipList"
+          [matAutocomplete]="auto"
+        />
+      </mat-chip-list>
+      <mat-autocomplete #auto="matAutocomplete" (optionSelected)="friendSelected($event)">
+        <ng-container *ngFor="let friend of friends$ | async | fdoc">
+          <mat-option *ngIf="!isFriendFiltered(friend)" [value]="friend">
+            <img
+              [src]="friend.photoURL || '/assets/face-black.svg'"
+              style="width: 24px; height: 24px"
+              class="user-icon"
+            />
+            &nbsp;
+            {{ friend.displayName }}
+          </mat-option>
+        </ng-container>
+      </mat-autocomplete>
+      <mat-hint>Type friend name to autocomplete</mat-hint>
+    </mat-form-field>
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button mat-dialog-close>Close</button>
+  <button mat-raised-button color="accent" (click)="onSubmit()" [disabled]="groupControl.invalid">Submit</button>
+</mat-dialog-actions>

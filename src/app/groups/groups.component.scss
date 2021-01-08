@@ -1,0 +1,21 @@
+table {
+  width: 100%;
+}
+
+td,
+th {
+  width: 25%;
+}
+
+.row-link:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+  cursor: pointer;
+}
+
+.container.mat-elevation-z8 {
+  overflow-x: auto;
+}
+
+.mat-column-photoURL {
+  width: 40px;
+}
