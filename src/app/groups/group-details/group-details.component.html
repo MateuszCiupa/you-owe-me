@@ -1,0 +1,48 @@
+<div class="action-bar" fxLayout="row" fxLayoutGap="20px">
+  <button mat-raised-button color="accent" routerLink="/expenses/create">
+    <mat-icon>add</mat-icon>
+    Create group expense
+  </button>
+  <button mat-raised-button color="accent" (click)="openAddGroupMemberDialog()">
+    <mat-icon>add</mat-icon>
+    Add group member
+  </button>
+</div>
+
+<mat-card *ngIf="group">
+  <mat-card-header>
+    <mat-card-title>Group details</mat-card-title>
+  </mat-card-header>
+
+  <mat-card-content>
+    <mat-list>
+      <mat-list-item>
+        <img class="user-icon" matListAvatar [src]="group.photoURL || '/assets/group-black.svg'" />
+      </mat-list-item>
+      <mat-list-item>
+        <span mat-line>Name</span>
+        <span mat-line>{{ group.displayName }}</span>
+      </mat-list-item>
+      <mat-list-item *ngIf="group.description">
+        <span mat-line>Description</span>
+        <span mat-line>{{ group.description }}</span>
+      </mat-list-item>
+    </mat-list>
+  </mat-card-content>
+</mat-card>
+
+<mat-card>
+  <mat-card-header>
+    <mat-card-title>Group members</mat-card-title>
+  </mat-card-header>
+
+  <mat-card-content></mat-card-content>
+</mat-card>
+
+<mat-card>
+  <mat-card-header>
+    <mat-card-title>Group expenses</mat-card-title>
+  </mat-card-header>
+
+  <mat-card-content></mat-card-content>
+</mat-card>
